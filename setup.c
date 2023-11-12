@@ -7,7 +7,7 @@ void drawBackground(int rowSize, int columnSize){
   background(); // Must draw on the background layer.
   setColour(black);
   for (int i = 0; i <rowSize; i++){
-    for (int x = 0; x<columnSize; x++){
+    for (int x = 0; x<columnSize; x++){ 
             drawRect((500/columnSize)*x, (500/rowSize)*i, (500/columnSize), (500/rowSize));        
         }
     }
@@ -102,10 +102,7 @@ switch(myrobot->direction[0]) {
 void reverseToHome(int numomoves, char movements[], struct robot *myrobot, int homeY, int homeX, int rowSize, int columnSize){
    
     for (size_t i = (numomoves - 1); i > 0; i--) {
-    if (atHome(myrobot, homeX, homeY)){ //terminate if pass by home before first move (more efficient)
-        break;
-    }
-    switch (movements[i]) {
+    switch (movements[i]) { //decode the movement
         case 'Y':
             myrobot->direction = "south";
             myrobot->currentY += 1;
@@ -132,14 +129,12 @@ void reverseToHome(int numomoves, char movements[], struct robot *myrobot, int h
 
 void intiialiseTargets(int numoftargets, struct target *targets, int numofobstacles, struct obstacle *obstacles, int rowSize, int columnSize, int homeX, int homeY){
     for (size_t i = 0; i < numoftargets; i++)
-{       targets[i].currentX = rand() % rowSize;
+{       targets[i].currentX = rand() % rowSize; 
         targets[i].currentY = rand() % columnSize;
         for (size_t x = 0; x < numofobstacles; x++)
         {
             while ((obstacles[x].X == targets[i].currentX && obstacles[x].Y == targets[i].currentY) || targets[i].currentX == homeX && targets[i].currentY == homeY)
             {targets[i].currentX = rand() % rowSize;
-
-            
             targets[i].currentY = rand() % columnSize;}
         }
      
@@ -202,20 +197,27 @@ void move(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles,
         }
     }
 }
+//Comments for tomorrow
+//Counter of blocks if at edge and counter == rowSize
+//Go around obstacle
+
 
 
 int main(int argc, char **argv){
     time_t t;
     srand((unsigned int) time(&t));
-    char movements[1000] = {'\0'};
+    int maxMovements = 1000; // or any other size you want
+    char *movements = malloc(maxMovements * sizeof(char));
     int numomoves = 0;
     int rowSize = 10;
     int columnSize = 10;
     int initialX = rand() % 10;
     int initialY = rand() % 10;
     int targetMarker = 0;
-    int numoftargets = rand() % 10;
-    int numofobstacles = rand() % 10;
+    int rowsVisited = 0;
+    int blocksVisited = 0;
+    int numoftargets = rand() % 10 + 1;
+    int numofobstacles = rand() % 10 + 1;
     struct robot myrobot;
 
     if (argc == 8) // 7 arguments were typed

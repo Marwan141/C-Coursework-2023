@@ -6,6 +6,8 @@ struct robot
         int currentY;
         char *direction;
         int hasMarker;
+        int blocksVisited;
+        int rowsVisited;
     };
 
 struct target
