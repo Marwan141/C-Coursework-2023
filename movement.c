@@ -99,32 +99,29 @@ int checkObstacle(struct robot *myrobot, struct obstacle *obstacles, int numofob
 
 
 
-int canMoveForward(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles){
+int canMoveForward(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize){
     switch (myrobot->direction[0])
     {
         case 'n':
             myrobot->currentY -= 1;
             if ((myrobot->currentY) < 0 || (checkObstacle(myrobot, obstacles, numofobstacles))){ 
                 myrobot->currentY += 1;
-              
                 return 0;
             }
             myrobot->currentY += 1;
             return 1;
         case 's':
             myrobot->currentY += 1;
-            if ((myrobot->currentY) > 9 || (checkObstacle(myrobot, obstacles, numofobstacles))){
+            if ((myrobot->currentY) > (rowSize - 1) || (checkObstacle(myrobot, obstacles, numofobstacles))){
                 myrobot->currentY -= 1;
-            
                 return 0;
             }
             myrobot->currentY -= 1;
             return 1;
         case 'e':
             myrobot->currentX += 1;
-            if ((myrobot->currentX) > 9 || (checkObstacle(myrobot, obstacles, numofobstacles))){
+            if ((myrobot->currentX) > (columnSize - 1) || (checkObstacle(myrobot, obstacles, numofobstacles))){
                 myrobot->currentX -= 1;
-       
                 return 0;
             }
             myrobot->currentX -= 1;
@@ -174,17 +171,17 @@ int isCarryingAMarker(struct robot *myrobot){
 
 }
 
-int canTurnLeft(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles) {
+int canTurnLeft(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize) {
     char* currentDirection = myrobot->direction;
     left(myrobot);
-    int canMove = canMoveForward(myrobot, obstacles, numofobstacles);
+    int canMove = canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize);
     myrobot->direction = currentDirection;
     return canMove;
 }
-int canTurnRight(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles) {
+int canTurnRight(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize) {
     char* currentDirection = myrobot->direction;
     right(myrobot);
-    int canMove = canMoveForward(myrobot, obstacles, numofobstacles);
+    int canMove = canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize);
     myrobot->direction = currentDirection;
     return canMove;
 }
