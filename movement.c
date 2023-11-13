@@ -1,5 +1,5 @@
 #include <string.h>
-#include "setup.h"
+#include "drawing.h"
 
 int atHome(struct robot *myrobot, int x, int y){
     if ((myrobot->currentX == x) && (myrobot->currentY == y)){
@@ -16,15 +16,15 @@ int targetAtHome(struct target *mytarget, int x, int y){
 }
 
 void pickUpMarker(struct robot *myrobot){
-    myrobot->hasMarker = 1;
+    myrobot->hasmarker = 1;
 }
 
 void dropMarker(struct robot *myrobot){
-    myrobot->hasMarker = 0;
+    myrobot->hasmarker = 0;
 }
 
 int isCarryingAMarker(struct robot *myrobot){
-    return myrobot->hasMarker;
+    return myrobot->hasmarker;
 }
 
 void left(struct robot *myrobot){
@@ -55,26 +55,26 @@ void right(struct robot *myrobot){
     }
 }
 
-void forward(struct robot *myrobot, char movements[], int numomoves){
+void forward(struct robot *myrobot, char movements[], int movecounter){
     switch (myrobot->direction[0])
     { //Encode movements! Capital letters mean reverse in either the x or y direction.
         case 'n':
             myrobot->currentY--;
-            movements[numomoves] = 'Y'; break;
+            movements[movecounter] = 'Y'; break;
         case 's':
             myrobot->currentY++;
-            movements[numomoves] = 'y'; break;
+            movements[movecounter] = 'y'; break;
         case 'e':
             myrobot->currentX++;
-            movements[numomoves] = 'x'; break;
+            movements[movecounter] = 'x'; break;
         case 'w':
             myrobot->currentX--;
-            movements[numomoves] = 'X'; break;
+            movements[movecounter] = 'X'; break;
     }
 }
 
-void reverseToHome(int numomoves, char movements[], struct robot *myrobot, int homeY, int homeX, int rowSize, int columnSize){
-    for (size_t i = (numomoves - 1); i >= 0; i--) {
+void reverseToHome(int movecounter, char movements[], struct robot *myrobot, int homeY, int homeX, int rowSize, int columnSize){
+    for (size_t i = (movecounter - 1); i >= 0; i--) {
         if (atHome(myrobot, homeX, homeY)) {
             break;
         }

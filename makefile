@@ -1,18 +1,17 @@
-CC=gcc
-CFLAGS=-I.
-DEPS = setup.h
-OBJ = setup.o 
+COMPILER=gcc
+MAIN = drawing.c
+OBJ = drawing.o 
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+%.o: %.c
+	$(COMPILER) -c -o $@ $<
 
-setup: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)
+drawing: $(OBJ)
+	$(COMPILER) -o $@ $^ 
 
 .PHONY: clean run
 
 clean:
-	rm -f $(OBJ) setup
+	rm -f $(OBJ) drawing
 
-run: setup
-	./setup | java -jar drawapp-3.0.jar
+run: drawing
+	./drawing | java -jar drawapp-3.0.jar

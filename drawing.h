@@ -1,19 +1,19 @@
-#ifndef SETUP_H
-#define SETUP_H
+#ifndef DRAWING_H
+#define DRAWING_H
 //declaring structs and functions used in both files 
 struct robot
     {
         int currentX;
         int currentY;
         char *direction;
-        int hasMarker;
+        int hasmarker;
     };
 
 struct target
     {
         int currentY;
         int currentX;
-        int isHome;
+        int ishome;
     };
 struct obstacle
     {

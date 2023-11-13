@@ -2,21 +2,21 @@
 
 Welcome to my coursework! In this version of the coursework with an added twist! What's displayed is a spirit (Robot) recollecting tears (Markers). All stages of the coursework have been completed!
 
-![Alt text](screenshot_final.png)
+<img src="final_screenshot.png" width="300" height="375">
 
-The cyan (light blue) markers represent an obstacle and the darker blue markers are the tears/markers that the child collects. The child has a triangle representing it's current direction, this is only in the program for orientation for the user. The red square represents the robot's home.
+The cyan (light blue) squares represent an obstacle and the darker blue circles are the tears/markers that the child collects. The child has a triangle representing it's current direction, this is only in the program for orientation for the user. The red square represents the robot's home.
 
 ## Dependancies
 
-To install this project, you need a C compiler, in this file I explain everything with GCC.
+To install this project, you need a C compiler, in this file I explain everything with GCC. You must also have Java 21 or later installed to be able to run the program due to the drawapp-3.0.jar requiring this.
 
-## How to run
+## How do I run this?
 First, we need to compile the code to do this we need to make sure we have gcc installed. Once installed, run on your terminal on the same folder as the files the following command:
 
 ```c
 gcc -o "INSERT_FILE_NAME_HERE" setup.c
 ```
-Beautiful! Now we need to run the actual compiled code. To do this we need to input the following command onto our terminal. (Make sure you're still in the same directory)
+Now we need to run the actual compiled code. To do this we need to input the following command onto our terminal. (Make sure you're still in the same directory)
 ```c
 ./"INSERT_FILE_NAME_HERE" | java -jar  drawapp-3.0.jar
 ```
@@ -40,7 +40,13 @@ Just run the following on your terminal and it will do everything for you!
 ```c
 make run
 ```
-## Constraints
+
+Also if you feel bored of the robot and want to make it go faster just change line 128 on drawing.c
+
+```c
+sleep(WAIT_TIME_IN_MILLISECONDS);
+```
+### Constraints
 
 Please keep in mind the following constraints when running the commands.
 ```
