@@ -1,6 +1,6 @@
 # C Coursework
 
-Welcome to my coursework! In this version of the coursework with an added twist! You are playing as a child spirit (Robot) recollecting tears (Markers).
+Welcome to my coursework! In this version of the coursework with an added twist! You are playing as a child spirit (Robot) recollecting tears (Markers). All stages of the coursework have been completed!
 
 ## Dependancies
 

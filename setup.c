@@ -47,49 +47,47 @@ void drawRobot(struct robot *myrobot, int rowSize, int columnSize){
     fillRect(((500/rowSize) * x) + 25, ((500/columnSize) * y) + 10, (500/rowSize) - 35, (500/columnSize) - 30);
     setColour(cyan);
     fillRect(((500/rowSize) * x) + 25, ((500/columnSize) * y) + 30, (500/rowSize) - 40, (500/columnSize) - 40);
-
     int xs[3], ys[3];
     setColour(red);
 
-switch(myrobot->direction[0]) {
-    case 'n': // North
-        xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
-        ys[0] = ((500/columnSize) * y);
-        xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
-        ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
-        xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
-        ys[2] = ((500/columnSize) * y) + (500/columnSize)/3;
-        fillPolygon(3, xs, ys);
-        break;
-    case 'e': // East
-        xs[0] = ((500/rowSize) * x) + (500/rowSize);
-        ys[0] = ((500/columnSize) * y) + (500/columnSize)/2;
-        xs[1] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
-        ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
-        xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
-        ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
-        fillPolygon(3, xs, ys);
-        break;
-    case 's': // South
-        xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
-        ys[0] = ((500/columnSize) * y) + (500/columnSize);
-        xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
-        ys[1] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
-        xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
-        ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
-        fillPolygon(3, xs, ys);
-        break;
-    case 'w': // West
-        xs[0] = ((500/rowSize) * x);
-        ys[0] = ((500/columnSize) * y) + (500/columnSize)/2;
-        xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
-        ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
-        xs[2] = ((500/rowSize) * x) + (500/rowSize)/3;
-        ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
-        fillPolygon(3, xs, ys);
-        break;
-}
-
+    switch(myrobot->direction[0]) {
+        case 'n': // North
+            xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
+            ys[0] = ((500/columnSize) * y);
+            xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
+            ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
+            xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
+            ys[2] = ((500/columnSize) * y) + (500/columnSize)/3;
+            fillPolygon(3, xs, ys);
+            break;
+        case 'e': // East
+            xs[0] = ((500/rowSize) * x) + (500/rowSize);
+            ys[0] = ((500/columnSize) * y) + (500/columnSize)/2;
+            xs[1] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
+            ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
+            xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
+            ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
+            fillPolygon(3, xs, ys);
+            break;
+        case 's': // South
+            xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
+            ys[0] = ((500/columnSize) * y) + (500/columnSize);
+            xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
+            ys[1] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
+            xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
+            ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
+            fillPolygon(3, xs, ys);
+            break;
+        case 'w': // West
+            xs[0] = ((500/rowSize) * x);
+            ys[0] = ((500/columnSize) * y) + (500/columnSize)/2;
+            xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
+            ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
+            xs[2] = ((500/rowSize) * x) + (500/rowSize)/3;
+            ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
+            fillPolygon(3, xs, ys);
+            break;
+    }
 
     if (isCarryingAMarker(myrobot) == 1){
         setColour(blue);
@@ -202,12 +200,61 @@ void move(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles,
 //Go around obstacle
 
 
+void initialiseRobot(struct robot *myrobot, int initialX, int initialY, char *direction) {
+    myrobot->currentX = initialX;
+    myrobot->currentY = initialY;
+    myrobot->direction = direction;
+}
+
+void initialiseGameElements(int numoftargets, struct target *targets, int numofobstacles, struct obstacle *obstacles, int rowSize, int columnSize, int initialX, int initialY) {
+    initialiseObstacles(numofobstacles, obstacles, rowSize, columnSize, initialX, initialY);
+    intiialiseTargets(numoftargets, targets, numofobstacles, obstacles, rowSize, columnSize, initialX, initialY);
+}
+
+void drawGame(int rowSize, int columnSize, struct target *targets, int numoftargets, struct obstacle *obstacles, int numofobstacles, struct robot *myrobot) {
+    drawBackground(rowSize, columnSize);
+    background();
+    drawAllTargets(targets, numoftargets, rowSize, columnSize);
+    drawAllObstacles(obstacles, numofobstacles, rowSize, columnSize);
+    foreground();
+    drawRobot(myrobot, rowSize, columnSize);
+}
+
+void handleMarker(int *targetMarker, struct robot *myrobot, int rowSize, int columnSize, int *numomoves, char *movements, int initialX, int initialY) {
+    background();
+    setColour(white);
+    fillRect(((500/rowSize) * myrobot->currentX) + 5, ((500/columnSize) * myrobot->currentY) + 5, (500/rowSize) - 10, (500/columnSize) - 10);
+    foreground();
+    (*targetMarker)++;
+    pickUpMarker(myrobot);
+    reverseToHome(*numomoves, movements, myrobot, initialX, initialY, rowSize, columnSize);
+    background();
+    drawTarget(myrobot->currentX, myrobot->currentY, rowSize, columnSize);
+    *numomoves = 1; //reinitialise the number of moves we start from 1 so the first move gets saved.
+    dropMarker(myrobot);
+}
+
+void validateArguments(int initialX, int initialY, char *direction, int rowSize, int columnSize, int numoftargets, int numofobstacles){
+    if (initialX < 0 || initialX > rowSize - 1) {
+        printf("Initial X value is out of bounds\n");
+        exit(1);
+    }
+    if (initialY < 0 || initialY > columnSize - 1) {
+        printf("Initial Y value is out of bounds\n");
+        exit(1);
+    }
+    if (strcmp(direction, "north") != 0 && strcmp(direction, "east") != 0 && strcmp(direction, "south") != 0 && strcmp(direction, "west") != 0) {
+        printf("Direction is invalid\n");
+        exit(1);
+    }
+}
 
 int main(int argc, char **argv){
     time_t t;
     srand((unsigned int) time(&t));
     int maxMovements = 1000; // or any other size you want
     char *movements = malloc(maxMovements * sizeof(char));
+    char* direction = "north";
     int numomoves = 0;
     int rowSize = 10;
     int columnSize = 10;
@@ -224,47 +271,27 @@ int main(int argc, char **argv){
     {
         initialX = atoi(argv[1]); // Get x value
         initialY = atoi(argv[2]); // Get y value
-        myrobot.direction = argv[3]; // Get direction
+        direction = argv[3]; // Get direction
         rowSize = atoi(argv[4]);
         columnSize = atoi(argv[5]);
         numoftargets = atoi(argv[6]);
         numofobstacles = atoi(argv[7]);
+        validateArguments(initialX, initialY, direction, rowSize, columnSize, numoftargets, numofobstacles);
 
     }
-    myrobot.currentX = initialX;
-    myrobot.currentY = initialY;
-    myrobot.direction = "north";
     
     struct target targets[numoftargets];
     struct obstacle obstacles[numofobstacles];
-
-    initialiseObstacles(numofobstacles, obstacles, rowSize, columnSize, initialX, initialY);
-    intiialiseTargets(numoftargets, targets, numofobstacles, obstacles, rowSize, columnSize, initialX, initialY);
-
+    initialiseRobot(&myrobot, initialX, initialY, direction);
+    initialiseGameElements(numoftargets, targets, numofobstacles, obstacles, rowSize, columnSize, initialX, initialY);
     setWindowSize(500,500);
     while (targetMarker != numoftargets)
     {   
     do
     {   
         move(&myrobot, obstacles, numofobstacles, movements, &numomoves, rowSize, columnSize);
-        drawBackground(rowSize, columnSize);
-        background();
-        drawAllTargets(targets, numoftargets, rowSize, columnSize);
-        drawAllObstacles(obstacles, numofobstacles, rowSize, columnSize);
-        foreground();
-        drawRobot(&myrobot, rowSize, columnSize);
-
+        drawGame(rowSize, columnSize, targets, numoftargets, obstacles, numofobstacles, &myrobot);
     } while (atMarker(myrobot.currentX, myrobot.currentY, targets, numoftargets) == 0);
-    background();
-    setColour(white);
-    fillRect(((500/rowSize) * myrobot.currentX) + 5, ((500/columnSize) * myrobot.currentY) + 5, (500/rowSize) - 10, (500/columnSize) - 10);
-    foreground();
-    targetMarker++;
-    pickUpMarker(&myrobot);
-    reverseToHome(numomoves, movements, &myrobot, initialX, initialY, rowSize, columnSize);
-    background();
-    drawTarget(myrobot.currentX, myrobot.currentY, rowSize, columnSize);
-    numomoves = 1; //reinitialise the number of moves we start from 1 so the first move gets saved.
-    dropMarker(&myrobot);
+    handleMarker(&targetMarker, &myrobot, rowSize, columnSize, &numomoves, movements, initialX, initialY);
     }
 }
