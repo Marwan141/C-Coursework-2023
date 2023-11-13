@@ -136,6 +136,8 @@ int canMoveForward(struct robot *myrobot, struct obstacle *obstacles, int numofo
             }
             myrobot->currentX += 1;
             return 1;
+        default:
+            return 0;
         
     }
 }

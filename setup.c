@@ -26,7 +26,6 @@ void drawObstacle(int x, int y, int rowSize, int columnSize){
 }
 
 
-
 int atMarker(int RX, int RY, struct target *targets, int numoftargets){ // Robot X, Robot Y, Marker X, Marker Y 
     for (size_t i = 0; i < numoftargets; i++)
     {
@@ -37,70 +36,101 @@ int atMarker(int RX, int RY, struct target *targets, int numoftargets){ // Robot
     return 0;
 }
 
-
-void drawRobot(struct robot *myrobot, int rowSize, int columnSize){  
-    int x = myrobot->currentX;
-    int y = myrobot->currentY;
-  setColour(black);
+//DrawRobot functions (:
+void drawRobotBody(int x, int y, int rowSize, int columnSize) {
+    setColour(black);
     drawRect(((500/rowSize) * x) + 5, ((500/columnSize) * y) + 5, (500/rowSize) - 10, (500/columnSize) - 10);
     fillRect(((500/rowSize) * x) + 5, ((500/columnSize) * y) + 10, (500/rowSize) - 35, (500/columnSize) - 30);
     fillRect(((500/rowSize) * x) + 25, ((500/columnSize) * y) + 10, (500/rowSize) - 35, (500/columnSize) - 30);
+}
+
+void drawRobotHead(int x, int y, int rowSize, int columnSize) {
     setColour(cyan);
     fillRect(((500/rowSize) * x) + 25, ((500/columnSize) * y) + 30, (500/rowSize) - 40, (500/columnSize) - 40);
+}
+
+void drawNorth(int x, int y, int rowSize, int columnSize, int *xs, int *ys) {
+    xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
+    ys[0] = ((500/columnSize) * y);
+    xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
+    ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
+    xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
+    ys[2] = ((500/columnSize) * y) + (500/columnSize)/3;
+    fillPolygon(3, xs, ys);
+}
+
+void drawEast(int x, int y, int rowSize, int columnSize, int *xs, int *ys) {
+    xs[0] = ((500/rowSize) * x) + (500/rowSize);
+    ys[0] = ((500/columnSize) * y) + (500/columnSize)/2;
+    xs[1] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
+    ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
+    xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
+    ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
+    fillPolygon(3, xs, ys);
+}
+
+void drawSouth(int x, int y, int rowSize, int columnSize, int *xs, int *ys) {
+    xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
+    ys[0] = ((500/columnSize) * y) + (500/columnSize);
+    xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
+    ys[1] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
+    xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
+    ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
+    fillPolygon(3, xs, ys);
+}
+
+void drawWest(int x, int y, int rowSize, int columnSize, int *xs, int *ys) {
+    xs[0] = ((500/rowSize) * x);
+    ys[0] = ((500/columnSize) * y) + (500/columnSize)/2;
+    xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
+    ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
+    xs[2] = ((500/rowSize) * x) + (500/rowSize)/3;
+    ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
+    fillPolygon(3, xs, ys);
+}
+
+void drawRobotDirection(struct robot *myrobot, int x, int y, int rowSize, int columnSize) {
     int xs[3], ys[3];
     setColour(red);
-
     switch(myrobot->direction[0]) {
         case 'n': // North
-            xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
-            ys[0] = ((500/columnSize) * y);
-            xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
-            ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
-            xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
-            ys[2] = ((500/columnSize) * y) + (500/columnSize)/3;
-            fillPolygon(3, xs, ys);
+            drawNorth(x, y, rowSize, columnSize, xs, ys);
             break;
         case 'e': // East
-            xs[0] = ((500/rowSize) * x) + (500/rowSize);
-            ys[0] = ((500/columnSize) * y) + (500/columnSize)/2;
-            xs[1] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
-            ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
-            xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
-            ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
-            fillPolygon(3, xs, ys);
+            drawEast(x, y, rowSize, columnSize, xs, ys);
             break;
         case 's': // South
-            xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
-            ys[0] = ((500/columnSize) * y) + (500/columnSize);
-            xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
-            ys[1] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
-            xs[2] = ((500/rowSize) * x) + 2*(500/rowSize)/3;
-            ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
-            fillPolygon(3, xs, ys);
+            drawSouth(x, y, rowSize, columnSize, xs, ys);
             break;
         case 'w': // West
-            xs[0] = ((500/rowSize) * x);
-            ys[0] = ((500/columnSize) * y) + (500/columnSize)/2;
-            xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
-            ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
-            xs[2] = ((500/rowSize) * x) + (500/rowSize)/3;
-            ys[2] = ((500/columnSize) * y) + 2*(500/columnSize)/3;
-            fillPolygon(3, xs, ys);
+            drawSouth(x, y, rowSize, columnSize, xs, ys);
             break;
     }
+}
 
+void drawMarker(struct robot *myrobot, int x, int y, int rowSize, int columnSize) {
     if (isCarryingAMarker(myrobot) == 1){
         setColour(blue);
         fillArc(((500/rowSize) * x) + 5, ((500/columnSize) * y) + 5, (500/rowSize) - 10, (500/columnSize) - 10, 0 ,360);
     }
+}
+
+void drawRobot(struct robot *myrobot, int rowSize, int columnSize) {
+    int x = myrobot->currentX;
+    int y = myrobot->currentY;
+    drawRobotBody(x, y, rowSize, columnSize);
+    drawRobotHead(x, y, rowSize, columnSize);
+    drawRobotDirection(myrobot, x, y, rowSize, columnSize);
+    drawMarker(myrobot, x, y, rowSize, columnSize);
     sleep(50);
     clear();
 }
+// drawRobot section finished
 
 void reverseToHome(int numomoves, char movements[], struct robot *myrobot, int homeY, int homeX, int rowSize, int columnSize){
    
     for (size_t i = (numomoves - 1); i > 0; i--) {
-    switch (movements[i]) { //decode the movement
+    switch (movements[i]) { //decode the movements! Capital letters mean reverse in either the x or y direction.
         case 'Y':
             myrobot->direction = "south";
             myrobot->currentY += 1;
@@ -177,7 +207,6 @@ void drawAllObstacles(struct obstacle *obstacles, int numofobstacles, int rowSiz
 
 void move(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, char movements[], int *numomoves, int rowSize, int columnSize) {
    int direction = rand() % 3; // Choose a random direction: 0 = forward, 1 = left, 2 = right
-
     if (direction == 0 && canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize)) {
         forward(myrobot, movements, *numomoves);
         (*numomoves)++;
@@ -277,7 +306,6 @@ int main(int argc, char **argv){
         numoftargets = atoi(argv[6]);
         numofobstacles = atoi(argv[7]);
         validateArguments(initialX, initialY, direction, rowSize, columnSize, numoftargets, numofobstacles);
-
     }
     
     struct target targets[numoftargets];

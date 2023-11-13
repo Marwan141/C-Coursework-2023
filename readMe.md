@@ -2,6 +2,10 @@
 
 Welcome to my coursework! In this version of the coursework with an added twist! You are playing as a child spirit (Robot) recollecting tears (Markers). All stages of the coursework have been completed!
 
+![Alt text](Game_screenshot.png)
+
+The cyan (light blue) markers represent an obstacle and the darker blue markers are the tears/markers that the child collects. The child has a triangle representing it's current direction, this is only in the program for orientation for the user.
+
 ## Dependancies
 
 To install this project, you need a C compiler, in this file I explain everything with GCC.
@@ -34,6 +38,8 @@ Please keep in mind the following constraints when running the commands.
 initialX can be any number between 0 and rowSize - 1 
 
 initialY can be any number between 0 and columnSize - 1 
+
+initialDirection can only be north, south, east and west.
 
 This is due to the fact that the way I number each block is from 0.
 
