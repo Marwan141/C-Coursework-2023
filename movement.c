@@ -41,7 +41,6 @@ void left(struct robot *myrobot){
 }
 
 void right(struct robot *myrobot){
-    
     switch (myrobot->direction[0])
     {
         case 'n':
@@ -60,12 +59,11 @@ void right(struct robot *myrobot){
 }
 
 void forward(struct robot *myrobot, char movements[], int numomoves){
-
     switch (myrobot->direction[0])
     {
         case 'n':
             myrobot->currentY -= 1;
-            movements[numomoves] = 'Y'; //lowercase Y means
+            movements[numomoves] = 'Y'; //Encode movement
             break;
         case 's':
             myrobot->currentY += 1;
@@ -81,74 +79,84 @@ void forward(struct robot *myrobot, char movements[], int numomoves){
             break;
     }
 }
-
+//CanMove section
 int checkObstacle(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles){
     for (size_t i = 0; i < numofobstacles; i++)
     {
         if ((myrobot->currentX == obstacles[i].X) && (myrobot->currentY == obstacles[i].Y))
         {
-            int it = (rand() % 5) + 1;
-
-            for (size_t i = 0; i < it; i++)
-            {
-                left(myrobot);
-            }
             return 1;
         }     
     }
     return 0;
 }
 
+int canMoveNorth(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles) {
+    myrobot->currentY -= 1;
+    if ((myrobot->currentY) < 0 || (checkObstacle(myrobot, obstacles, numofobstacles))){ 
+        myrobot->currentY += 1;
+        myrobot->direction = "south"; //stop robot from moving forward and change direction
+        return 0;
+    }
+    myrobot->currentY += 1;
+    return 1;
+}
 
+int canMoveSouth(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize) {
+    myrobot->currentY += 1;
+    if ((myrobot->currentY) > (rowSize - 1) || (checkObstacle(myrobot, obstacles, numofobstacles))){
+        myrobot->currentY -= 1;
+        myrobot->direction = "north";
+        return 0;
+    }
+    myrobot->currentY -= 1;
+    return 1;
+}
+
+int canMoveEast(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int columnSize) {
+    myrobot->currentX += 1;
+    if ((myrobot->currentX) > (columnSize - 1) || (checkObstacle(myrobot, obstacles, numofobstacles))){
+        myrobot->currentX -= 1;
+        myrobot->direction = "west";
+        return 0;
+    }
+    myrobot->currentX -= 1;
+    return 1;
+}
+
+int canMoveWest(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles) {
+    myrobot->currentX -= 1;
+    if ((myrobot->currentX) < 0 || (checkObstacle(myrobot, obstacles, numofobstacles))){
+        myrobot->currentX += 1;
+        myrobot->direction = "east";
+        return 0;
+    }
+    myrobot->currentX += 1;
+    return 1;
+}
 
 int canMoveForward(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize){
     switch (myrobot->direction[0])
     {
         case 'n':
-            myrobot->currentY -= 1;
-            if ((myrobot->currentY) < 0 || (checkObstacle(myrobot, obstacles, numofobstacles))){ 
-                myrobot->currentY += 1;
-                return 0;
-            }
-            myrobot->currentY += 1;
-            return 1;
+            return canMoveNorth(myrobot, obstacles, numofobstacles);
         case 's':
-            myrobot->currentY += 1;
-            if ((myrobot->currentY) > (rowSize - 1) || (checkObstacle(myrobot, obstacles, numofobstacles))){
-                myrobot->currentY -= 1;
-                return 0;
-            }
-            myrobot->currentY -= 1;
-            return 1;
+            return canMoveSouth(myrobot, obstacles, numofobstacles, rowSize);
         case 'e':
-            myrobot->currentX += 1;
-            if ((myrobot->currentX) > (columnSize - 1) || (checkObstacle(myrobot, obstacles, numofobstacles))){
-                myrobot->currentX -= 1;
-                return 0;
-            }
-            myrobot->currentX -= 1;
-            return 1;
+            return canMoveEast(myrobot, obstacles, numofobstacles, columnSize);
         case 'w':
-            myrobot->currentX -= 1;
-            if ((myrobot->currentX) < 0 || (checkObstacle(myrobot, obstacles, numofobstacles))){
-                myrobot->currentX += 1;
-                return 0;
-            }
-            myrobot->currentX += 1;
-            return 1;
+            return canMoveWest(myrobot, obstacles, numofobstacles);
         default:
             return 0;
-        
     }
 }
-
+//CanMove section end
 
 int atHome(struct robot *myrobot, int x, int y){
     if ((myrobot->currentX == x) && (myrobot->currentY == y)){
         return 1;
     }
     return 0;
-
 }
 
 int targetAtHome(struct target *mytarget, int x, int y){
@@ -156,23 +164,18 @@ int targetAtHome(struct target *mytarget, int x, int y){
         return 1;
     }
     return 0;
-
-
 }
 
 void pickUpMarker(struct robot *myrobot){
     myrobot->hasMarker = 1;
-
 }
 
 void dropMarker(struct robot *myrobot){
     myrobot->hasMarker = 0;
-
 }
 
 int isCarryingAMarker(struct robot *myrobot){
     return myrobot->hasMarker;
-
 }
 
 int canTurnLeft(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize) {

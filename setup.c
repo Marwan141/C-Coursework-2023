@@ -26,10 +26,10 @@ void drawObstacle(int x, int y, int rowSize, int columnSize){
 }
 
 
-int atMarker(int RX, int RY, struct target *targets, int numoftargets){ // Robot X, Robot Y, Marker X, Marker Y 
+int atMarker(struct robot *myrobot, struct target *targets, int numoftargets){ //
     for (size_t i = 0; i < numoftargets; i++)
     {
-               if ((RX == targets[i].currentX) && (RY == targets[i].currentY) && (targets[i].isHome == 0)){
+               if ((myrobot->currentX == targets[i].currentX) && (myrobot->currentY == targets[i].currentY) && (targets[i].isHome == 0)){
                 targets[i].isHome = 1;
                 return 1;}  
     }
@@ -42,15 +42,13 @@ void drawRobotBody(int x, int y, int rowSize, int columnSize) {
     drawRect(((500/rowSize) * x) + 5, ((500/columnSize) * y) + 5, (500/rowSize) - 10, (500/columnSize) - 10);
     fillRect(((500/rowSize) * x) + 5, ((500/columnSize) * y) + 10, (500/rowSize) - 35, (500/columnSize) - 30);
     fillRect(((500/rowSize) * x) + 25, ((500/columnSize) * y) + 10, (500/rowSize) - 35, (500/columnSize) - 30);
-}
-
-void drawRobotHead(int x, int y, int rowSize, int columnSize) {
     setColour(cyan);
     fillRect(((500/rowSize) * x) + 25, ((500/columnSize) * y) + 30, (500/rowSize) - 40, (500/columnSize) - 40);
 }
 
+
 void drawNorth(int x, int y, int rowSize, int columnSize, int *xs, int *ys) {
-    xs[0] = ((500/rowSize) * x) + (500/rowSize)/2;
+    xs[0] = ((500/rowSize) * x) + (500/rowSize)/2; 
     ys[0] = ((500/columnSize) * y);
     xs[1] = ((500/rowSize) * x) + (500/rowSize)/3;
     ys[1] = ((500/columnSize) * y) + (500/columnSize)/3;
@@ -103,7 +101,7 @@ void drawRobotDirection(struct robot *myrobot, int x, int y, int rowSize, int co
             drawSouth(x, y, rowSize, columnSize, xs, ys);
             break;
         case 'w': // West
-            drawSouth(x, y, rowSize, columnSize, xs, ys);
+            drawWest(x, y, rowSize, columnSize, xs, ys);
             break;
     }
 }
@@ -119,7 +117,6 @@ void drawRobot(struct robot *myrobot, int rowSize, int columnSize) {
     int x = myrobot->currentX;
     int y = myrobot->currentY;
     drawRobotBody(x, y, rowSize, columnSize);
-    drawRobotHead(x, y, rowSize, columnSize);
     drawRobotDirection(myrobot, x, y, rowSize, columnSize);
     drawMarker(myrobot, x, y, rowSize, columnSize);
     sleep(50);
@@ -128,7 +125,6 @@ void drawRobot(struct robot *myrobot, int rowSize, int columnSize) {
 // drawRobot section finished
 
 void reverseToHome(int numomoves, char movements[], struct robot *myrobot, int homeY, int homeX, int rowSize, int columnSize){
-   
     for (size_t i = (numomoves - 1); i > 0; i--) {
     switch (movements[i]) { //decode the movements! Capital letters mean reverse in either the x or y direction.
         case 'Y':
@@ -157,7 +153,7 @@ void reverseToHome(int numomoves, char movements[], struct robot *myrobot, int h
 
 void intiialiseTargets(int numoftargets, struct target *targets, int numofobstacles, struct obstacle *obstacles, int rowSize, int columnSize, int homeX, int homeY){
     for (size_t i = 0; i < numoftargets; i++)
-{       targets[i].currentX = rand() % rowSize; 
+    {   targets[i].currentX = rand() % rowSize; 
         targets[i].currentY = rand() % columnSize;
         for (size_t x = 0; x < numofobstacles; x++)
         {
@@ -166,9 +162,8 @@ void intiialiseTargets(int numoftargets, struct target *targets, int numofobstac
             targets[i].currentY = rand() % columnSize;}
         }
      
-    targets[i].isHome = 0;
-}
-
+        targets[i].isHome = 0;
+    }
 }
 
 void initialiseObstacles(int numofobstacles, struct obstacle *obstacles, int rowSize, int columnSize, int homeX, int homeY){
@@ -193,7 +188,6 @@ void drawAllTargets(struct target *targets, int numoftargets, int rowSize, int c
             {
                 drawTarget(targets[i].currentX, targets[i].currentY, rowSize, columnSize);
             }
-
         }
     }
 
@@ -206,17 +200,17 @@ void drawAllObstacles(struct obstacle *obstacles, int numofobstacles, int rowSiz
 
 
 void move(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, char movements[], int *numomoves, int rowSize, int columnSize) {
-   int direction = rand() % 3; // Choose a random direction: 0 = forward, 1 = left, 2 = right
-    if (direction == 0 && canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize)) {
+    int direction = rand() % 10; //Favoring going forward because it seems to be more efficient and avoid complete random movements.
+    if (direction < 8 && canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize)) {
         forward(myrobot, movements, *numomoves);
         (*numomoves)++;
-    } else if (direction == 1 && canTurnLeft(myrobot, obstacles, numofobstacles, rowSize, columnSize)) {
+    } else if (direction == 8 && canTurnLeft(myrobot, obstacles, numofobstacles, rowSize, columnSize)) {
         left(myrobot);
         if (canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize)) {
             forward(myrobot, movements, *numomoves);
             (*numomoves)++;
         }
-    } else {
+    } else if (direction == 9) {
         right(myrobot);
         if (canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize)) {
             forward(myrobot, movements, *numomoves);
@@ -224,10 +218,6 @@ void move(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles,
         }
     }
 }
-//Comments for tomorrow
-//Counter of blocks if at edge and counter == rowSize
-//Go around obstacle
-
 
 void initialiseRobot(struct robot *myrobot, int initialX, int initialY, char *direction) {
     myrobot->currentX = initialX;
@@ -264,7 +254,7 @@ void handleMarker(int *targetMarker, struct robot *myrobot, int rowSize, int col
 }
 
 void validateArguments(int initialX, int initialY, char *direction, int rowSize, int columnSize, int numoftargets, int numofobstacles){
-    if (initialX < 0 || initialX > rowSize - 1) {
+    if (initialX < 0 || initialX > rowSize - 1) {  //Since my coordinates start from 0, I need to subtract 1 from the rowSize and columnSize.
         printf("Initial X value is out of bounds\n");
         exit(1);
     }
@@ -272,7 +262,7 @@ void validateArguments(int initialX, int initialY, char *direction, int rowSize,
         printf("Initial Y value is out of bounds\n");
         exit(1);
     }
-    if (strcmp(direction, "north") != 0 && strcmp(direction, "east") != 0 && strcmp(direction, "south") != 0 && strcmp(direction, "west") != 0) {
+    if (strcmp(direction, "north") != 0 && strcmp(direction, "east") != 0 && strcmp(direction, "south") != 0 && strcmp(direction, "west") != 0) { 
         printf("Direction is invalid\n");
         exit(1);
     }
@@ -281,8 +271,7 @@ void validateArguments(int initialX, int initialY, char *direction, int rowSize,
 int main(int argc, char **argv){
     time_t t;
     srand((unsigned int) time(&t));
-    int maxMovements = 1000; // or any other size you want
-    char *movements = malloc(maxMovements * sizeof(char));
+    char movements[1000];
     char* direction = "north";
     int numomoves = 0;
     int rowSize = 10;
@@ -295,31 +284,30 @@ int main(int argc, char **argv){
     int numoftargets = rand() % 10 + 1;
     int numofobstacles = rand() % 10 + 1;
     struct robot myrobot;
-
     if (argc == 8) // 7 arguments were typed
     {
-        initialX = atoi(argv[1]); // Get x value
-        initialY = atoi(argv[2]); // Get y value
-        direction = argv[3]; // Get direction
+        initialX = atoi(argv[1]);
+        initialY = atoi(argv[2]);
+        direction = argv[3]; 
         rowSize = atoi(argv[4]);
         columnSize = atoi(argv[5]);
         numoftargets = atoi(argv[6]);
         numofobstacles = atoi(argv[7]);
         validateArguments(initialX, initialY, direction, rowSize, columnSize, numoftargets, numofobstacles);
     }
-    
     struct target targets[numoftargets];
     struct obstacle obstacles[numofobstacles];
     initialiseRobot(&myrobot, initialX, initialY, direction);
     initialiseGameElements(numoftargets, targets, numofobstacles, obstacles, rowSize, columnSize, initialX, initialY);
     setWindowSize(500,500);
-    while (targetMarker != numoftargets)
+    while (targetMarker != numoftargets) 
     {   
-    do
-    {   
-        move(&myrobot, obstacles, numofobstacles, movements, &numomoves, rowSize, columnSize);
-        drawGame(rowSize, columnSize, targets, numoftargets, obstacles, numofobstacles, &myrobot);
-    } while (atMarker(myrobot.currentX, myrobot.currentY, targets, numoftargets) == 0);
+        do
+        {   
+            move(&myrobot, obstacles, numofobstacles, movements, &numomoves, rowSize, columnSize);
+            drawGame(rowSize, columnSize, targets, numoftargets, obstacles, numofobstacles, &myrobot);
+        }
+        while (atMarker(&myrobot, targets, numoftargets) == 0);
     handleMarker(&targetMarker, &myrobot, rowSize, columnSize, &numomoves, movements, initialX, initialY);
     }
 }
