@@ -1,5 +1,12 @@
 {
     "files.associations": {
         "setup.h": "c"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/marwanyassini/Documents/CProgramming/Coursework",
+            "binaryPath": "/Users/marwanyassini/Documents/CProgramming/Coursework/setup",
+            "binaryArgs": []
+        }
+    ]
 }
