@@ -1,10 +1,10 @@
 # C Coursework
 
-Welcome to my coursework! In this version of the coursework with an added twist! You are playing as a child spirit (Robot) recollecting tears (Markers). All stages of the coursework have been completed!
+Welcome to my coursework! In this version of the coursework with an added twist! What's displayed is a spirit (Robot) recollecting tears (Markers). All stages of the coursework have been completed!
 
-![Alt text](Game_screenshot.png)
+![Alt text](screenshot_final.png)
 
-The cyan (light blue) markers represent an obstacle and the darker blue markers are the tears/markers that the child collects. The child has a triangle representing it's current direction, this is only in the program for orientation for the user.
+The cyan (light blue) markers represent an obstacle and the darker blue markers are the tears/markers that the child collects. The child has a triangle representing it's current direction, this is only in the program for orientation for the user. The red square represents the robot's home.
 
 ## Dependancies
 
@@ -31,16 +31,26 @@ This might seem a little intimidating but here's an example command.
 ./test 2 4 north 10 10 4 9 | java -jar  drawapp-3.0.jar
 ```
 
+
+### Optional:
+
+If you want a simpler way to run the random version of the program, I have also provided a make file. (This will only work on GCC compilers.)
+
+Just run the following on your terminal and it will do everything for you!
+```c
+make run
+```
 ## Constraints
 
 Please keep in mind the following constraints when running the commands.
-
-initialX can be any number between 0 and rowSize - 1 
-
-initialY can be any number between 0 and columnSize - 1 
-
+```
+initialX can be any number between 0 and rowSize - 1.
+```
+```
+initialY can be any number between 0 and columnSize - 1.
+```
+(This is due to the fact that the way I number each block is from 0.)
+```
 initialDirection can only be north, south, east and west.
+```
 
-This is due to the fact that the way I number each block is from 0.
-
-Don't try to make the robot's life impossible! Keep the number of obstacles sensible (: Although you can test it however much you want.

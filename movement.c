@@ -1,42 +1,43 @@
 #include <string.h>
+#include "setup.h"
 
-struct robot
-    {
-        int currentX;
-        int currentY;
-        char *direction;
-        int hasMarker;
-        int blocksVisited;
-        int rowsVisited;
-    };
+int atHome(struct robot *myrobot, int x, int y){
+    if ((myrobot->currentX == x) && (myrobot->currentY == y)){
+        return 1;
+    }
+    return 0;
+}
 
-struct target
-    {
-        int currentY;
-        int currentX;
-        int isHome;
-    };
-struct obstacle
-    {
-        int Y;
-        int X;
-    };
+int targetAtHome(struct target *mytarget, int x, int y){
+    if ((mytarget->currentX == x) && (mytarget->currentY == y)){
+        return 1;
+    }
+    return 0;
+}
+
+void pickUpMarker(struct robot *myrobot){
+    myrobot->hasMarker = 1;
+}
+
+void dropMarker(struct robot *myrobot){
+    myrobot->hasMarker = 0;
+}
+
+int isCarryingAMarker(struct robot *myrobot){
+    return myrobot->hasMarker;
+}
 
 void left(struct robot *myrobot){
     switch (myrobot->direction[0])
     {
         case 'n':
-            myrobot->direction = "west";
-            break;
+            myrobot->direction = "west"; break;
         case 's':
-            myrobot->direction = "east";
-            break;
+            myrobot->direction = "east"; break;
         case 'e':
-            myrobot->direction = "north";
-            break;
+            myrobot->direction = "north"; break;
         case 'w':
-            myrobot->direction = "south";
-            break;
+            myrobot->direction = "south"; break;
     }
 }
 
@@ -44,41 +45,57 @@ void right(struct robot *myrobot){
     switch (myrobot->direction[0])
     {
         case 'n':
-            myrobot->direction = "east";
-            break;
+            myrobot->direction = "east"; break;
         case 's':
-            myrobot->direction = "west";
-            break;
+            myrobot->direction = "west"; break;
         case 'e':
-            myrobot->direction = "south";
-            break;
+            myrobot->direction = "south"; break;
         case 'w':
-            myrobot->direction = "north";
-            break;
+            myrobot->direction = "north"; break;
     }
 }
 
 void forward(struct robot *myrobot, char movements[], int numomoves){
     switch (myrobot->direction[0])
-    {
+    { //Encode movements! Capital letters mean reverse in either the x or y direction.
         case 'n':
-            myrobot->currentY -= 1;
-            movements[numomoves] = 'Y'; //Encode movement
-            break;
+            myrobot->currentY--;
+            movements[numomoves] = 'Y'; break;
         case 's':
-            myrobot->currentY += 1;
-            movements[numomoves] = 'y';
-            break;
+            myrobot->currentY++;
+            movements[numomoves] = 'y'; break;
         case 'e':
-            myrobot->currentX += 1;
-            movements[numomoves] = 'x';
-            break;
+            myrobot->currentX++;
+            movements[numomoves] = 'x'; break;
         case 'w':
-            myrobot->currentX -= 1;
-            movements[numomoves] = 'X';
-            break;
+            myrobot->currentX--;
+            movements[numomoves] = 'X'; break;
     }
 }
+
+void reverseToHome(int numomoves, char movements[], struct robot *myrobot, int homeY, int homeX, int rowSize, int columnSize){
+    for (size_t i = (numomoves - 1); i >= 0; i--) {
+        if (atHome(myrobot, homeX, homeY)) {
+            break;
+        }
+        switch (movements[i]) { //decode the movements! Capital letters mean reverse in either the x or y direction.
+            case 'Y':
+                myrobot->direction = "south";
+                myrobot->currentY += 1; break;
+            case 'y':
+                myrobot->direction = "north";
+                myrobot->currentY -= 1; break;
+            case 'X':
+                myrobot->direction = "east";
+                myrobot->currentX += 1; break;
+            case 'x':
+                myrobot->direction = "west";
+                myrobot->currentX -= 1; break;
+        }
+        drawRobot(myrobot, rowSize, columnSize);
+    }
+}
+
 //CanMove section
 int checkObstacle(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles){
     for (size_t i = 0; i < numofobstacles; i++)
@@ -146,37 +163,10 @@ int canMoveForward(struct robot *myrobot, struct obstacle *obstacles, int numofo
             return canMoveEast(myrobot, obstacles, numofobstacles, columnSize);
         case 'w':
             return canMoveWest(myrobot, obstacles, numofobstacles);
-        default:
-            return 0;
     }
+    return 0;
 }
 //CanMove section end
-
-int atHome(struct robot *myrobot, int x, int y){
-    if ((myrobot->currentX == x) && (myrobot->currentY == y)){
-        return 1;
-    }
-    return 0;
-}
-
-int targetAtHome(struct target *mytarget, int x, int y){
-    if ((mytarget->currentX == x) && (mytarget->currentY == y)){
-        return 1;
-    }
-    return 0;
-}
-
-void pickUpMarker(struct robot *myrobot){
-    myrobot->hasMarker = 1;
-}
-
-void dropMarker(struct robot *myrobot){
-    myrobot->hasMarker = 0;
-}
-
-int isCarryingAMarker(struct robot *myrobot){
-    return myrobot->hasMarker;
-}
 
 int canTurnLeft(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize) {
     char* currentDirection = myrobot->direction;
