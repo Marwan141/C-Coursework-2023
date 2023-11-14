@@ -51,7 +51,7 @@ void drawRobotBody(int x, int y, int rowsize, int columnsize) {
     fillRect(((WINDOWSIZE/rowsize) * x) + 25, ((WINDOWSIZE/columnsize) * y) + 30, (WINDOWSIZE/rowsize) - 40, (WINDOWSIZE/columnsize) - 40);
 }
 
-//same calculations but rotated for each!
+//same calculations for a triangle but rotated for each!
 void drawNorthTriangle(int x, int y, int rowsize, int columnsize, int *xs, int *ys) {
     xs[0] = ((WINDOWSIZE/rowsize) * x) + (WINDOWSIZE/rowsize)/2; 
     ys[0] = ((WINDOWSIZE/columnsize) * y);
@@ -130,33 +130,43 @@ void drawRobot(struct robot *myrobot, int rowsize, int columnsize) {
 }
 // drawRobot section finished
 
-void intiialiseTargets(int numoftargets, struct target *targets, int numofobstacles, struct obstacle *obstacles, int rowsize, int columnsize, int homeX, int homeY){
-    for (size_t i = 0; i < numoftargets; i++)
-    {   targets[i].currentX = rand() % rowsize; 
-        targets[i].currentY = rand() % columnsize;
-        for (size_t x = 0; x < numofobstacles; x++)
-        {
-            while ((obstacles[x].X == targets[i].currentX && obstacles[x].Y == targets[i].currentY) || (targets[i].currentX == homeX && targets[i].currentY == homeY)) 
-            //checking if target is on top of an obstacle or on top of the home position
-            {
-                targets[i].currentX = rand() % rowsize; 
-                targets[i].currentY = rand() % columnsize;
-            }
+
+int isPositionOccupied(int x, int y, struct target *targets, int numoftargets, struct obstacle *obstacles, int numofobstacles, int homeX, int homeY) {
+    //cheking if the position is occupied by a target obstacle or home
+    if (x == homeX && y == homeY) {
+        return 1;
+    }
+    for (size_t i = 0; i < numofobstacles; i++) {
+        if (obstacles[i].X == x && obstacles[i].Y == y) {
+            return 1;
         }
+    }
+    for (size_t i = 0; i < numoftargets; i++) {
+        if (targets[i].currentX == x && targets[i].currentY == y) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void initialiseTargets(int numoftargets, struct target *targets, int numofobstacles, struct obstacle *obstacles, int rowsize, int columnsize, int homeX, int homeY){
+    for (size_t i = 0; i < numoftargets; i++)
+    {  
+        do {
+            targets[i].currentX = rand() % rowsize; 
+            targets[i].currentY = rand() % columnsize;
+        } while (isPositionOccupied(targets[i].currentX,targets[i].currentY, targets, i, obstacles, numofobstacles, homeX, homeY));
         targets[i].ishome = 0;
     }
 }
 
+
 void initialiseObstacles(int numofobstacles, struct obstacle *obstacles, int rowsize, int columnsize, int homeX, int homeY){
     for (size_t i = 0; i < numofobstacles; i++)
-    {   
-        obstacles[i].X = rand() % rowsize;
-        obstacles[i].Y = rand() % columnsize;
-        while (obstacles[i].X == homeX && obstacles[i].Y == homeY)
-        {
+    {   do {
             obstacles[i].X = rand() % rowsize;
             obstacles[i].Y = rand() % columnsize;
-        } 
+        } while (isPositionOccupied(obstacles[i].X, obstacles[i].Y, NULL, 0, obstacles, i, homeX, homeY)); //no need to check for targets as they deal with obstacles
         drawObstacle(obstacles[i].X, obstacles[i].Y, rowsize, columnsize);
     }
 }
@@ -208,7 +218,7 @@ void initialiseRobot(struct robot *myrobot, int initialX, int initialY, char *di
 void initialiseGameElements(int numoftargets, struct target *targets, int numofobstacles, struct obstacle *obstacles, int rowsize, int columnsize, int initialX, int initialY) {
     setWindowSize(WINDOWSIZE,WINDOWSIZE);
     initialiseObstacles(numofobstacles, obstacles, rowsize, columnsize, initialX, initialY);
-    intiialiseTargets(numoftargets, targets, numofobstacles, obstacles, rowsize, columnsize, initialX, initialY);
+    initialiseTargets(numoftargets, targets, numofobstacles, obstacles, rowsize, columnsize, initialX, initialY);
 }
 
 void drawGame(int rowsize, int columnsize, struct target *targets, int numoftargets, struct obstacle *obstacles, int numofobstacles, struct robot *myrobot, int homeX, int homeY) {
@@ -236,7 +246,7 @@ void handleMarker(int *targetmarker, struct robot *myrobot, int rowsize, int col
 }
 
 void validateArguments(int initialX, int initialY, char *direction, int rowsize, int columnsize, int numoftargets, int numofobstacles){
-    if (initialX < 0 || initialX > rowsize - 1) {  //My coordinate system is 0 indexed (:
+    if (initialX < 0 || initialX > rowsize - 1) {  //My coordinate system is 0 indexed in the code but abstracted from the user (:
         printf("Initial X value is out of bounds\n");
         exit(1);
     }
@@ -250,9 +260,9 @@ void validateArguments(int initialX, int initialY, char *direction, int rowsize,
     }
 }
 
-void initialize(char **argv, int *initialX, int *initialY, char **direction, int *rowsize, int *columnsize, int *numoftargets, int *numofobstacles) {
-    *initialX = atoi(argv[1]);
-    *initialY = atoi(argv[2]);
+void initialise(char **argv, int *initialX, int *initialY, char **direction, int *rowsize, int *columnsize, int *numoftargets, int *numofobstacles) {
+    *initialX = atoi(argv[1]) - 1;
+    *initialY = atoi(argv[2]) - 1;
     *direction = argv[3]; 
     *rowsize = atoi(argv[4]);
     *columnsize = atoi(argv[5]);
@@ -282,7 +292,7 @@ int main(int argc, char **argv){
         printf("Error allocating memory\n");
         exit(1);
     }
-    char* direction = "north"; //Default values 
+    char* direction = "north"; //Default values if no arguments are given
     int movecounter = 0;
     int rowsize = 10;
     int columnsize = 10;
@@ -294,7 +304,7 @@ int main(int argc, char **argv){
     struct robot myrobot;
     if (argc == 8) 
     {
-        initialize(argv, &initialX, &initialY, &direction, &rowsize, &columnsize, &numoftargets, &numofobstacles);
+        initialise(argv, &initialX, &initialY, &direction, &rowsize, &columnsize, &numoftargets, &numofobstacles);
     }
     struct target targets[numoftargets];
     struct obstacle obstacles[numofobstacles];

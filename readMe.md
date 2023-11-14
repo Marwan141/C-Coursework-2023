@@ -52,12 +52,11 @@ sleep(WAIT_TIME_IN_MILLISECONDS);
 
 Please keep in mind the following constraints when running the commands.
 ```
-initialX can be any number between 0 and rowSize - 1.
+initialX can be any number between 0 and rowSize.
 ```
 ```
-initialY can be any number between 0 and columnSize - 1.
+initialY can be any number between 0 and columnSize.
 ```
-(This is due to the fact that the way I number each block is from 0.)
 ```
 initialDirection can only be north, south, east and west.
 ```
