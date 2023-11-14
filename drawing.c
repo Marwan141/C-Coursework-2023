@@ -219,7 +219,6 @@ void initialiseGameElements(int numoftargets, struct target *targets, int numofo
 }
 
 void drawGame(int rowsize, int columnsize, struct target *targets, int numoftargets, struct obstacle *obstacles, int numofobstacles, struct robot *myrobot, int homeX, int homeY) {
-    drawBackground(rowsize, columnsize);
     foreground();
     drawHome(homeX, homeY, rowsize, columnsize);
     drawAllTargets(targets, numoftargets, rowsize, columnsize);
@@ -266,6 +265,7 @@ void initialise(char **argv, int *initialX, int *initialY, char **direction, int
 }
 
 void gameLoop(struct robot *myrobot, struct target *targets, struct obstacle *obstacles, int numoftargets, int numofobstacles, int rowsize, int columnsize, int initialX, int initialY, char *movements, int *movecounter, int *targetmarker) {
+    drawBackground(rowsize, columnsize);
     while (*targetmarker != numoftargets) 
     {   
         do

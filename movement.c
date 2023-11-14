@@ -8,13 +8,6 @@ int atHome(struct robot *myrobot, int x, int y){
     return 0;
 }
 
-int targetAtHome(struct target *mytarget, int x, int y){
-    if ((mytarget->currentX == x) && (mytarget->currentY == y)){
-        return 1;
-    }
-    return 0;
-}
-
 void pickUpMarker(struct robot *myrobot){
     myrobot->hasmarker = 1;
 }

@@ -20,7 +20,7 @@ You must also have Java 21 or later installed to be able to run the program due 
 First, we need to compile the code to do this we need to make sure we have gcc installed. Once installed, run on your terminal on the same folder as the files the following command:
 
 ```c
-gcc -o "INSERT_FILE_NAME_HERE" setup.c
+gcc -o "INSERT_FILE_NAME_HERE" drawing.c
 ```
 Now we need to run the actual compiled code. To do this we need to input the following command onto our terminal. (Make sure you're still in the same directory)
 ```c
