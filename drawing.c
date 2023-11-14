@@ -51,7 +51,7 @@ void drawRobotBody(int x, int y, int rowsize, int columnsize) {
     fillRect(((WINDOWSIZE/rowsize) * x) + 25, ((WINDOWSIZE/columnsize) * y) + 30, (WINDOWSIZE/rowsize) - 40, (WINDOWSIZE/columnsize) - 40);
 }
 
-
+//same calculations but rotated for each!
 void drawNorthTriangle(int x, int y, int rowsize, int columnsize, int *xs, int *ys) {
     xs[0] = ((WINDOWSIZE/rowsize) * x) + (WINDOWSIZE/rowsize)/2; 
     ys[0] = ((WINDOWSIZE/columnsize) * y);
@@ -165,7 +165,7 @@ void initialiseObstacles(int numofobstacles, struct obstacle *obstacles, int row
 void drawAllTargets(struct target *targets, int numoftargets, int rowsize, int columnsize){
     for (size_t i = 0; i < numoftargets; i++)
         {
-            if (targets[i].ishome == 0) // check if target has not been collected
+            if (targets[i].ishome == 0)
             {
                 drawTarget(targets[i].currentX, targets[i].currentY, rowsize, columnsize);
             }
@@ -180,7 +180,7 @@ void drawAllObstacles(struct obstacle *obstacles, int numofobstacles, int rowsiz
 
 
 void move(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, char movements[], int *movecounter, int rowsize, int columnsize) {
-    int direction = rand() % 10; //Favoring going forward from trial and error
+    int direction = rand() % 10; //Favoring going forward from trial and error found 80% forward to be the best
     if (direction < 8 && canMoveForward(myrobot, obstacles, numofobstacles, rowsize, columnsize)) {
         forward(myrobot, movements, *movecounter);
         (*movecounter)++;
@@ -236,7 +236,7 @@ void handleMarker(int *targetmarker, struct robot *myrobot, int rowsize, int col
 }
 
 void validateArguments(int initialX, int initialY, char *direction, int rowsize, int columnsize, int numoftargets, int numofobstacles){
-    if (initialX < 0 || initialX > rowsize - 1) {  //Since my coordinates start from 0, I need to subtract 1 from the rowsize and columnsize.
+    if (initialX < 0 || initialX > rowsize - 1) {  //My coordinate system is 0 indexed (:
         printf("Initial X value is out of bounds\n");
         exit(1);
     }
@@ -250,6 +250,30 @@ void validateArguments(int initialX, int initialY, char *direction, int rowsize,
     }
 }
 
+void initialize(char **argv, int *initialX, int *initialY, char **direction, int *rowsize, int *columnsize, int *numoftargets, int *numofobstacles) {
+    *initialX = atoi(argv[1]);
+    *initialY = atoi(argv[2]);
+    *direction = argv[3]; 
+    *rowsize = atoi(argv[4]);
+    *columnsize = atoi(argv[5]);
+    *numoftargets = atoi(argv[6]);
+    *numofobstacles = atoi(argv[7]);
+    validateArguments(*initialX, *initialY, *direction, *rowsize, *columnsize, *numoftargets, *numofobstacles);
+}
+
+void gameLoop(struct robot *myrobot, struct target *targets, struct obstacle *obstacles, int numoftargets, int numofobstacles, int rowsize, int columnsize, int initialX, int initialY, char *movements, int *movecounter, int *targetmarker) {
+    while (*targetmarker != numoftargets) 
+    {   
+        do
+        {   
+            move(myrobot, obstacles, numofobstacles, movements, movecounter, rowsize, columnsize);
+            drawGame(rowsize, columnsize, targets, numoftargets, obstacles, numofobstacles, myrobot, initialX, initialY);
+        }
+        while (atMarker(myrobot, targets, numoftargets) == 0);
+        handleMarker(targetmarker, myrobot, rowsize, columnsize, movecounter, movements, initialX, initialY);
+    }
+}
+
 int main(int argc, char **argv){
     time_t t;
     srand((unsigned int) time(&t)); 
@@ -258,7 +282,7 @@ int main(int argc, char **argv){
         printf("Error allocating memory\n");
         exit(1);
     }
-    char* direction = "north"; //Default values
+    char* direction = "north"; //Default values 
     int movecounter = 0;
     int rowsize = 10;
     int columnsize = 10;
@@ -268,31 +292,15 @@ int main(int argc, char **argv){
     int numoftargets = rand() % 10 + 1;
     int numofobstacles = rand() % 10 + 1;
     struct robot myrobot;
-    if (argc == 8) // 7 arguments were typed
+    if (argc == 8) 
     {
-        initialX = atoi(argv[1]);
-        initialY = atoi(argv[2]);
-        direction = argv[3]; 
-        rowsize = atoi(argv[4]);
-        columnsize = atoi(argv[5]);
-        numoftargets = atoi(argv[6]);
-        numofobstacles = atoi(argv[7]);
-        validateArguments(initialX, initialY, direction, rowsize, columnsize, numoftargets, numofobstacles);
+        initialize(argv, &initialX, &initialY, &direction, &rowsize, &columnsize, &numoftargets, &numofobstacles);
     }
     struct target targets[numoftargets];
     struct obstacle obstacles[numofobstacles];
     initialiseRobot(&myrobot, initialX, initialY, direction);
     initialiseGameElements(numoftargets, targets, numofobstacles, obstacles, rowsize, columnsize, initialX, initialY);
-    while (targetmarker != numoftargets) 
-    {   
-        do
-        {   
-            move(&myrobot, obstacles, numofobstacles, movements, &movecounter, rowsize, columnsize);
-            drawGame(rowsize, columnsize, targets, numoftargets, obstacles, numofobstacles, &myrobot, initialX, initialY);
-        }
-        while (atMarker(&myrobot, targets, numoftargets) == 0);
-        handleMarker(&targetmarker, &myrobot, rowsize, columnsize, &movecounter, movements, initialX, initialY);
-    }
+    gameLoop(&myrobot, targets, obstacles, numoftargets, numofobstacles, rowsize, columnsize, initialX, initialY, movements, &movecounter, &targetmarker);
     free(movements);
     printf("All targets have been found!\n");
 }

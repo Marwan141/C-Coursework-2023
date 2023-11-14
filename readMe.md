@@ -1,6 +1,8 @@
 # C Coursework
 
-Welcome to my coursework! In this version of the coursework with an added twist! What's displayed is a spirit (Robot) recollecting tears (Markers). All stages of the coursework have been completed!
+Welcome to my coursework! This is version of the robot coursework with an added twist! What's displayed is a spirit (Robot) recollecting tears (Markers) and bringing them back home whilst avoiding all obstacles.
+
+All stages of the coursework have been completed!
 
 <img src="final_screenshot.png" width="300" height="375">
 
@@ -34,7 +36,7 @@ This might seem a little intimidating but here's an example command.
 
 ### Optional:
 
-If you want a simpler way to run the random version of the program, I have also provided a make file. (This will only work on GCC compilers.)
+If you want a simpler way to run the the program, I have also provided a make file. 
 
 Just run the following on your terminal and it will do everything for you!
 ```c
