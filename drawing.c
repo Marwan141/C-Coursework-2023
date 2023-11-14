@@ -23,7 +23,6 @@ void drawTarget(int x, int y, int rowsize, int columnsize){
 
 
 void drawObstacle(int x, int y, int rowsize, int columnsize){
-    background();
     setColour(cyan);
     fillRect(((WINDOWSIZE/rowsize) * x) + 5, ((WINDOWSIZE/columnsize) * y) + 5, (WINDOWSIZE/rowsize) - 10, (WINDOWSIZE/columnsize) - 10);
 }
@@ -125,8 +124,6 @@ void drawRobot(struct robot *myrobot, int rowsize, int columnsize) {
     drawRobotBody(x, y, rowsize, columnsize);
     drawRobotDirection(myrobot, x, y, rowsize, columnsize);
     drawMarker(myrobot, x, y, rowsize, columnsize);
-    sleep(100);
-    clear();
 }
 // drawRobot section finished
 
@@ -223,24 +220,21 @@ void initialiseGameElements(int numoftargets, struct target *targets, int numofo
 
 void drawGame(int rowsize, int columnsize, struct target *targets, int numoftargets, struct obstacle *obstacles, int numofobstacles, struct robot *myrobot, int homeX, int homeY) {
     drawBackground(rowsize, columnsize);
-    background();
+    foreground();
     drawHome(homeX, homeY, rowsize, columnsize);
     drawAllTargets(targets, numoftargets, rowsize, columnsize);
     drawAllObstacles(obstacles, numofobstacles, rowsize, columnsize);
-    foreground();
     drawRobot(myrobot, rowsize, columnsize);
 }
 
-void handleMarker(int *targetmarker, struct robot *myrobot, int rowsize, int columnsize, int *movecounter, char *movements, int initialX, int initialY) {
-    background();
+void handleMarker(int *targetmarker, struct robot *myrobot, struct target *targets, int rowsize, int columnsize, int *movecounter, char *movements, int initialX, int initialY, int numoftargets, struct obstacle *obstacles, int numofobstacles) {
+    foreground();
     setColour(white);
     fillRect(((WINDOWSIZE/rowsize) * myrobot->currentX) + 5, ((WINDOWSIZE/columnsize) * myrobot->currentY) + 5, (WINDOWSIZE/rowsize) - 10, (WINDOWSIZE/columnsize) - 10);
-    foreground();
     (*targetmarker)++;
     pickUpMarker(myrobot);
-    reverseToHome(*movecounter, movements, myrobot, initialY, initialX, rowsize, columnsize);
+    reverseToHome(*movecounter, movements, myrobot, initialY, initialX, rowsize, columnsize, targets, numoftargets, obstacles, numofobstacles);
     *movecounter = 0; //Reset the number of moves
-    background();
     drawTarget(myrobot->currentX, myrobot->currentY, rowsize, columnsize);
     dropMarker(myrobot);
 }
@@ -278,9 +272,12 @@ void gameLoop(struct robot *myrobot, struct target *targets, struct obstacle *ob
         {   
             move(myrobot, obstacles, numofobstacles, movements, movecounter, rowsize, columnsize);
             drawGame(rowsize, columnsize, targets, numoftargets, obstacles, numofobstacles, myrobot, initialX, initialY);
+            sleep(100);
+            clear();
+            
         }
         while (atMarker(myrobot, targets, numoftargets) == 0);
-        handleMarker(targetmarker, myrobot, rowsize, columnsize, movecounter, movements, initialX, initialY);
+        handleMarker(targetmarker, myrobot, targets, rowsize, columnsize, movecounter, movements, initialX, initialY, numoftargets, obstacles, numofobstacles);
     }
 }
 
@@ -312,5 +309,6 @@ int main(int argc, char **argv){
     initialiseGameElements(numoftargets, targets, numofobstacles, obstacles, rowsize, columnsize, initialX, initialY);
     gameLoop(&myrobot, targets, obstacles, numoftargets, numofobstacles, rowsize, columnsize, initialX, initialY, movements, &movecounter, &targetmarker);
     free(movements);
+    drawGame(rowsize, columnsize, targets, numoftargets, obstacles, numofobstacles, &myrobot, initialX, initialY);
     printf("All targets have been found!\n");
 }

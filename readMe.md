@@ -6,11 +6,15 @@ All stages of the coursework have been completed!
 
 <img src="final_screenshot.png" width="300" height="375">
 
-The cyan (light blue) squares represent an obstacle and the darker blue circles are the tears/markers that the child collects. The child has a triangle representing it's current direction, this is only in the program for orientation for the user. The red square represents the robot's home.
+The cyan (light blue) squares represent an obstacle and the darker blue circles are the tears/markers that the child collects. The child has a triangle representing it's current direction, this is only in the program for orientation for the user. The red square represents the robot's home which absorbs all tears.
 
 ## Dependancies
 
-To install this project, you need a C compiler, in this file I explain everything with GCC. You must also have Java 21 or later installed to be able to run the program due to the drawapp-3.0.jar requiring this.
+To install this project, you need a C compiler, in this file I explain everything with GCC. Make sure to import the following files onto the unzipped folder: 
+```c
+graphics.c, graphics.h and drawapp-3.0.jar
+```
+You must also have Java 21 or later installed to be able to run the program due to the drawapp-3.0.jar requiring this.
 
 ## How do I run this?
 First, we need to compile the code to do this we need to make sure we have gcc installed. Once installed, run on your terminal on the same folder as the files the following command:

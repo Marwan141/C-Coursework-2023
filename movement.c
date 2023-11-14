@@ -73,7 +73,7 @@ void forward(struct robot *myrobot, char movements[], int movecounter){
     }
 }
 
-void reverseToHome(int movecounter, char movements[], struct robot *myrobot, int homeY, int homeX, int rowSize, int columnSize){
+void reverseToHome(int movecounter, char movements[], struct robot *myrobot, int homeY, int homeX, int rowsize, int columnsize, struct target *targets, int numoftargets, struct obstacle *obstacles, int numofobstacles){
     for (size_t i = (movecounter - 1); i >= 0; i--) {
         if (atHome(myrobot, homeX, homeY)) {
             break;
@@ -92,7 +92,9 @@ void reverseToHome(int movecounter, char movements[], struct robot *myrobot, int
                 myrobot->direction = "west";
                 myrobot->currentX -= 1; break;
         }
-        drawRobot(myrobot, rowSize, columnSize);
+        drawGame(rowsize, columnsize, targets, numoftargets, obstacles, numofobstacles, myrobot, homeX, homeY);
+        sleep(100);
+        clear();
     }
 }
 
@@ -152,15 +154,15 @@ int canMoveWest(struct robot *myrobot, struct obstacle *obstacles, int numofobst
     return 1;
 }
 
-int canMoveForward(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize){
+int canMoveForward(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowsize, int columnsize){
     switch (myrobot->direction[0])
     {
         case 'n':
             return canMoveNorth(myrobot, obstacles, numofobstacles);
         case 's':
-            return canMoveSouth(myrobot, obstacles, numofobstacles, rowSize);
+            return canMoveSouth(myrobot, obstacles, numofobstacles, rowsize);
         case 'e':
-            return canMoveEast(myrobot, obstacles, numofobstacles, columnSize);
+            return canMoveEast(myrobot, obstacles, numofobstacles, columnsize);
         case 'w':
             return canMoveWest(myrobot, obstacles, numofobstacles);
     }
@@ -168,17 +170,15 @@ int canMoveForward(struct robot *myrobot, struct obstacle *obstacles, int numofo
 }
 //CanMove section end
 
-int canTurnLeft(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize) {
+int canTurnLeft(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowsize, int columnsize) {
     char* currentDirection = myrobot->direction;
     left(myrobot);
-    int canMove = canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize);
     myrobot->direction = currentDirection;
-    return canMove;
+    return canMoveForward(myrobot, obstacles, numofobstacles, rowsize, columnsize);
 }
-int canTurnRight(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowSize, int columnSize) {
+int canTurnRight(struct robot *myrobot, struct obstacle *obstacles, int numofobstacles, int rowsize, int columnsize) {
     char* currentDirection = myrobot->direction;
     right(myrobot);
-    int canMove = canMoveForward(myrobot, obstacles, numofobstacles, rowSize, columnSize);
     myrobot->direction = currentDirection;
-    return canMove;
+    return canMoveForward(myrobot, obstacles, numofobstacles, rowsize, columnsize);
 }

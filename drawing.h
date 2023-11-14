@@ -22,5 +22,6 @@ struct obstacle
     };
 
 void drawRobot(struct robot *myrobot, int rowSize, int columnSize);
+void drawGame(int rowSize, int columnSize, struct target *targets, int numoftargets, struct obstacle *obstacles, int numofobstacles, struct robot *myrobot, int initialX, int initialY);
 
 #endif
